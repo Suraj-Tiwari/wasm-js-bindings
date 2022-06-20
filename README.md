@@ -1,6 +1,6 @@
 # WASM(RUST) JS Bindings
 
-## This module is a poc of showing complex data types communication between Javascript and Rust webassembly module
+## This repo is a poc of showing complex data types communication between Javascript and Rust webassembly module
 
 ### Following Tests are performed
 
