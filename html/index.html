@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+
+
+<script type="module">
+  import {Message} from './message.js'
+  import {addMessageInToImports} from './message-in.js'
+
+  (async () => {
+    /**
+     * wasm module should be able to call this.
+     * @param a
+     * @returns {string}
+     */
+    const fromRustCall = (a) => {
+      console.log("data from rust: " + a);
+      return "done";
+    }
+
+    /**
+     * In order to access shared memory and functions we crated a module instance
+     * one that wasm module is loaded, a shared memory buffer and memory handler functions
+     * are exposed.
+     * @type {ArrayBuffer}
+     */
+    const data = await (await fetch('../target/wasm32-unknown-unknown/release/wasm_core.wasm')).arrayBuffer()
+    const module = await WebAssembly.compile(data);
+    const message = new Message();
+
+    /**
+     * Config can be used to send data/functions to wasm binary
+     */
+    const config = {}
+
+    /**
+     * Register our exported function
+     */
+    addMessageInToImports(config, {jscall: fromRustCall}, (x) => message.instance.exports[x])
+    /**
+     * Start wasm module
+     */
+    await message.instantiate(module, config)
+
+    /**
+     * Call returnObj and sayHello
+     */
+    console.log(message.returnObj());
+    console.log(message.sayHello());
+  })()
+</script>
+</body>
+</html>

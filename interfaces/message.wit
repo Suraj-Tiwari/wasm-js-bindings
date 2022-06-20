@@ -1,0 +1,7 @@
+record obj-data {
+    message: string,
+    data: string
+}
+
+say-hello: func() -> string
+return-obj: func() -> obj-data

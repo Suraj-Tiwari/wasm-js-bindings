@@ -1,0 +1,1 @@
+jscall: func(message: string) -> string
